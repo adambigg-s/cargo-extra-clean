@@ -106,8 +106,8 @@ fn find_cargo_projects(root: &path::Path) -> Vec<PathBuf> {
     recursive_find_projects(root, &mut project_paths);
     return project_paths;
 
-    fn recursive_find_projects(root: &path::Path, project_paths: &mut Vec<PathBuf>) {
-        let Ok(entries) = root.read_dir()
+    fn recursive_find_projects(path: &path::Path, project_paths: &mut Vec<PathBuf>) {
+        let Ok(entries) = path.read_dir()
         else {
             return;
         };
@@ -129,10 +129,10 @@ fn find_cargo_projects(root: &path::Path) -> Vec<PathBuf> {
     }
 }
 
-fn clean_project(path: &path::Path) -> io::Result<ExitStatus> {
-    Command::new("cargo").arg("clean").current_dir(path).status()
-}
-
 fn is_cargo_object(path: &path::Path) -> bool {
     (path.join("Cargo.toml").is_file() || path.join("cargo.toml").is_file()) && path.join("target").is_dir()
+}
+
+fn clean_project(path: &path::Path) -> io::Result<ExitStatus> {
+    Command::new("cargo").arg("clean").current_dir(path).status()
 }
